@@ -1,11 +1,110 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Página Web</title>
+    <title>Juego de las Torres de Hanoi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .tower {
+            display: inline-block;
+            width: 10px;
+            height: 100px;
+            background: gray;
+            margin: 0 20px;
+            position: relative;
+        }
+        .disk {
+            height: 20px;
+            background: blue;
+            position: absolute;
+            bottom: 0;
+            transition: all 0.3s;
+        }
+        #towerA, #towerB, #towerC {
+            height: 200px;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>¡Bienvenido a Mi Página Web!</h1>
-    <p>Esta es una página web creada con GitHub Pages.</p>
+    <h1>Juego de las Torres de Hanoi</h1>
+    <div id="towerA" class="tower"></div>
+    <div id="towerB" class="tower"></div>
+    <div id="towerC" class="tower"></div>
+    <br>
+    <button class="button" onclick="startGame()">Iniciar Juego</button>
+    <script>
+        let towers = {
+            A: [],
+            B: [],
+            C: []
+        };
+        let numDisks = 4;
+
+        function startGame() {
+            towers.A = Array.from({ length: numDisks }, (_, i) => i + 1);
+            towers.B = [];
+            towers.C = [];
+            render();
+        }
+
+        function render() {
+            document.getElementById('towerA').innerHTML = '';
+            document.getElementById('towerB').innerHTML = '';
+            document.getElementById('towerC').innerHTML = '';
+
+            towers.A.forEach(disk => {
+                createDisk('towerA', disk);
+            });
+            towers.B.forEach(disk => {
+                createDisk('towerB', disk);
+            });
+            towers.C.forEach(disk => {
+                createDisk('towerC', disk);
+            });
+        }
+
+        function createDisk(towerId, disk) {
+            const diskElement = document.createElement('div');
+            diskElement.className = 'disk';
+            diskElement.style.width = (disk * 20) + 'px'; // Ancho basado en el tamaño del disco
+            diskElement.style.left = ((10 - disk) * 10) + 'px'; // Centrar el disco
+            document.getElementById(towerId).appendChild(diskElement);
+        }
+
+        function moveDisk(from, to) {
+            if (towers[from].length === 0) return;
+            const disk = towers[from].pop();
+            if (towers[to].length === 0 || towers[to][towers[to].length - 1] > disk) {
+                towers[to].push(disk);
+                render();
+            } else {
+                towers[from].push(disk); // Deshacer el movimiento
+            }
+        }
+
+        // Ejemplo de movimientos simples (debes implementar la lógica del juego)
+        function hanoi(n, from, to, aux) {
+            if (n === 1) {
+                moveDisk(from, to);
+            } else {
+                hanoi(n - 1, from, aux, to);
+                moveDisk(from, to);
+                hanoi(n - 1, aux, to, from);
+            }
+        }
+
+        // Puedes usar la función hanoi para resolver automáticamente el juego o añadir eventos de clic para mover discos
+    </script>
 </body>
 </html>
